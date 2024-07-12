@@ -3,8 +3,14 @@ import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import { FlatList, Image, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
-// Replace the URL with the actual endpoint of your API
 const API_URL = 'https://fakestoreapi.com/products';
+
+import backwardIcon from 'my-app\assets\Backward.png';
+import closeIcon from 'my-app\assets\Close.png';
+import doNotBleachIcon from 'my-app\assets\Do Not Bleach.png';
+import doNotWashIcon from './images/do_not_wash.png';
+import doorToDoorIcon from './images/door_to_door.png';
+import downIcon from './images/down.png';
 
 const App = () => {
   const [products, setProducts] = useState([]);
@@ -134,50 +140,50 @@ const App = () => {
         <ScrollView>
           <View style={styles.header}>
             <TouchableOpacity onPress={() => setScreen('Home')}>
-              <Image source={require('./images/navigate.png')} style={styles.icon} />
+              <Image source={backwardIcon} style={styles.icon} />
             </TouchableOpacity>
             <Image source={require('./images/Logo.png')} style={styles.logo} />
             <Image source={require('./images/Search.png')} style={styles.icon} />
           </View>
           <Text style={styles.checkoutText}>CHECKOUT</Text>
-          <View style={styles.line} />
           <FlatList
             data={cart}
             keyExtractor={(item) => item.id.toString()}
             renderItem={renderCartItem}
           />
-          <View style={styles.footer}>
-            <Text style={styles.estimatedTotalText}>Est. Total</Text>
-            <Text style={styles.totalPriceText}>${cart.reduce((sum, item) => sum + item.price, 0)}</Text>
-          </View>
-          <TouchableOpacity style={styles.checkoutButton}>
-            <Text style={styles.checkoutButtonText}>CHECKOUT</Text>
-            <Image source={require('./images/shoppingBag.png')} style={styles.checkoutIcon} />
+          <TouchableOpacity style={styles.viewCartButton} onPress={() => setScreen('Home')}>
+            <Text style={styles.viewCartButtonText}>Back to Home</Text>
           </TouchableOpacity>
         </ScrollView>
       ) : screen === 'ProductDetail' ? (
         <ScrollView>
           <View style={styles.header}>
             <TouchableOpacity onPress={() => setScreen('Home')}>
-              <Image source={require('./images/navigate.png')} style={styles.icon} />
+              <Image source={backwardIcon} style={styles.icon} />
             </TouchableOpacity>
             <Image source={require('./images/Logo.png')} style={styles.logo} />
             <Image source={require('./images/Search.png')} style={styles.icon} />
           </View>
           {renderProductDetail()}
         </ScrollView>
-      ) : screen === 'Drawer' && (
-        <View style={styles.drawerContainer}>
-          {/* Drawer content goes here */}
-          <TouchableOpacity onPress={() => setScreen('Home')}>
-            <Text style={styles.drawerText}>Home</Text>
-          </TouchableOpacity>
-          <TouchableOpacity onPress={() => setScreen('Cart')}>
-            <Text style={styles.drawerText}>Cart</Text>
-          </TouchableOpacity>
-          {/* Add more drawer items as needed */}
+      ) : screen === 'Drawer' ? (
+        <View style={styles.drawer}>
+          <View style={styles.header}>
+            <TouchableOpacity onPress={() => setScreen('Home')}>
+              <Image source={closeIcon} style={styles.icon} />
+            </TouchableOpacity>
+            <Image source={require('./images/Logo.png')} style={styles.logo} />
+            <Image source={require('./images/Search.png')} style={styles.icon} />
+          </View>
+          <Text style={styles.drawerText}>Drawer Content Here</Text>
+          <View style={styles.iconList}>
+            <Image source={doNotBleachIcon} style={styles.listIcon} />
+            <Image source={downIcon} style={styles.listIcon} />
+            <Image source={doNotWashIcon} style={styles.listIcon} />
+            <Image source={doorToDoorIcon} style={styles.listIcon} />
+          </View>
         </View>
-      )}
+      ) : null}
     </View>
   );
 };
@@ -187,39 +193,84 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#fff',
   },
-  menu: {
-    width: 30,
-    height: 30,
-    marginHorizontal: 8,
-  },
   header: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    padding: 16,
-    marginTop: 50,
+    padding: 10,
+    borderBottomWidth: 1,
+    borderBottomColor: '#ccc',
   },
   logo: {
-    width: 150,
-    height: 60,
-    marginLeft: 30,
-  },
-  headerIcons: {
-    flexDirection: 'row',
+    width: 100,
+    height: 40,
+    resizeMode: 'contain',
   },
   icon: {
     width: 30,
     height: 30,
     marginHorizontal: 8,
   },
+  productWrapper: {
+    flex: 1,
+    margin: 10,
+    backgroundColor: '#f9f9f9',
+    borderRadius: 10,
+    padding: 10,
+    alignItems: 'center',
+  },
+  productImageContainer: {
+    position: 'relative',
+    width: '100%',
+    alignItems: 'center',
+  },
+  productImage: {
+    width: 100,
+    height: 100,
+    resizeMode: 'contain',
+  },
+  addIconContainer: {
+    position: 'absolute',
+    bottom: -15,
+    right: -10,
+  },
+  addIcon: {
+    width: 30,
+    height: 30,
+  },
+  cartCount: {
+    position: 'absolute',
+    bottom: -5,
+    right: -5,
+    backgroundColor: 'red',
+    color: 'white',
+    borderRadius: 10,
+    padding: 5,
+    fontSize: 12,
+  },
+  categoryText: {
+    fontSize: 14,
+    color: '#888',
+    marginVertical: 5,
+  },
+  productName: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    marginVertical: 5,
+  },
+  productPrice: {
+    fontSize: 14,
+    color: '#000',
+  },
   subHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    padding: 16,
+    padding: 10,
   },
   storyText: {
-    fontSize: 30,
+    fontSize: 18,
+    fontWeight: 'bold',
   },
   subHeaderIcons: {
     flexDirection: 'row',
@@ -228,187 +279,121 @@ const styles = StyleSheet.create({
     width: 40,
     height: 40,
     borderRadius: 20,
+    backgroundColor: '#eee',
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#f0f0f0',
-    marginHorizontal: 8,
+    marginHorizontal: 5,
   },
   roundIcon: {
-    width: 20,
-    height: 20,
+    width: 24,
+    height: 24,
   },
   productGrid: {
-    padding: 16,
-  },
-  productWrapper: {
-    flex: 1,
-    padding: 8,
-  },
-  productImageContainer: {
-    position: 'relative',
-  },
-  productImage: {
-    width: '100%',
-    height: 150,
-    borderRadius: 8,
-  },
-  addIconContainer: {
-    position: 'absolute',
-    top: 8,
-    right: 8,
-    backgroundColor: '#fff',
-    borderRadius: 20,
-    padding: 4,
-  },
-  addIcon: {
-    width: 30,
-    height: 30,
-  },
-  cartCount: {
-    position: 'absolute',
-    top: -8,
-    right: -8,
-    backgroundColor: 'red',
-    borderRadius: 10,
-    paddingHorizontal: 6,
-    paddingVertical: 2,
-    color: '#fff',
-    fontSize: 12,
-  },
-  categoryText: {
-    fontSize: 12,
-    color: '#888',
-    marginTop: 8,
-  },
-  productName: {
-    fontSize: 16,
-    fontWeight: 'bold',
-  },
-  productPrice: {
-    fontSize: 14,
-    color: '#888',
+    padding: 10,
   },
   viewCartButton: {
-    padding: 16,
     backgroundColor: '#000',
+    padding: 15,
     alignItems: 'center',
-    justifyContent: 'center',
-    margin: 16,
-    borderRadius: 8,
+    margin: 10,
+    borderRadius: 10,
   },
   viewCartButtonText: {
     color: '#fff',
     fontSize: 16,
   },
+  checkoutText: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    textAlign: 'center',
+    marginVertical: 10,
+  },
   cartItemContainer: {
     flexDirection: 'row',
-    padding: 16,
-    borderBottomWidth: 1,
-    borderBottomColor: '#eee',
+    padding: 10,
+    alignItems: 'center',
   },
   cartItemImage: {
-    width: 60,
-    height: 60,
-    borderRadius: 8,
+    width: 80,
+    height: 80,
+    resizeMode: 'contain',
   },
   cartItemDetails: {
-    marginLeft: 16,
     flex: 1,
+    marginLeft: 10,
   },
   productText: {
-    fontSize: 12,
+    fontSize: 14,
     color: '#888',
   },
   removeIconContainer: {
     position: 'absolute',
-    top: 8,
-    right: 8,
+    top: 5,
+    right: 5,
   },
   removeIcon: {
-    width: 20,
-    height: 20,
-  },
-  footer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    padding: 16,
-    borderTopWidth: 1,
-    borderTopColor: '#eee',
-  },
-  estimatedTotalText: {
-    fontSize: 16,
-  },
-  totalPriceText: {
-    fontSize: 16,
-    fontWeight: 'bold',
-  },
-  checkoutButton: {
-    padding: 16,
-    backgroundColor: '#000',
-    alignItems: 'center',
-    justifyContent: 'center',
-    margin: 16,
-    borderRadius: 8,
-    flexDirection: 'row',
-  },
-  checkoutButtonText: {
-    color: '#fff',
-    fontSize: 16,
-    marginRight: 8,
-  },
-  checkoutIcon: {
-    width: 20,
-    height: 20,
+    width: 24,
+    height: 24,
   },
   productDetailContainer: {
-    padding: 16,
+    padding: 20,
+    alignItems: 'center',
   },
   detailImage: {
-    width: '100%',
-    height: 300,
-    borderRadius: 8,
+    width: 200,
+    height: 200,
+    resizeMode: 'contain',
   },
   detailCategory: {
-    fontSize: 12,
+    fontSize: 14,
     color: '#888',
-    marginTop: 8,
+    marginVertical: 5,
   },
   detailName: {
-    fontSize: 24,
+    fontSize: 18,
     fontWeight: 'bold',
-    marginTop: 8,
+    marginVertical: 5,
   },
   detailPrice: {
-    fontSize: 20,
-    color: '#888',
-    marginTop: 8,
+    fontSize: 16,
+    color: '#000',
+    marginVertical: 5,
   },
   detailDescription: {
     fontSize: 14,
-    color: '#888',
-    marginTop: 8,
+    color: '#666',
+    marginVertical: 10,
+    textAlign: 'center',
   },
   addToCartButton: {
-    padding: 16,
     backgroundColor: '#000',
-    alignItems: 'center',
-    justifyContent: 'center',
-    margin: 16,
-    borderRadius: 8,
+    padding: 15,
+    borderRadius: 10,
+    marginVertical: 10,
   },
   addToCartButtonText: {
     color: '#fff',
     fontSize: 16,
   },
-  drawerContainer: {
-    flex: 1,
-    padding: 16,
+  drawer: {
+    padding: 20,
+    alignItems: 'center',
   },
   drawerText: {
-    fontSize: 16,
-    marginVertical: 8,
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginVertical: 20,
+  },
+  iconList: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'center',
+  },
+  listIcon: {
+    width: 40,
+    height: 40,
+    margin: 8,
   },
 });
 
 export default App;
-
